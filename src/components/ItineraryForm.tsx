@@ -1,5 +1,6 @@
-import React, { useState, SubmitEvent, ChangeEvent } from "react";
+import React, { useState, SubmitEvent } from "react";
 import { ItineraryItem } from "./ItineraryItem";
+import { toDateTimeLocalValue } from "../utils/dateTime";
 
 type ItineraryAddFormProps = {
   onAddItem: (item: Omit<ItineraryItem, "id">) => void;
@@ -17,8 +18,8 @@ function ItineraryAddForm({ onAddItem }: ItineraryAddFormProps) {
     const newItem: Omit<ItineraryItem, "id"> = {
       activity,
       location,
-      timeStart: new Date(),
-      timeEnd: new Date(),
+      timeStart,
+      timeEnd,
     };
     onAddItem(newItem);
 
@@ -69,7 +70,7 @@ function ItineraryAddForm({ onAddItem }: ItineraryAddFormProps) {
           type="datetime-local"
           id="timeStart"
           name="timeStart"
-          value={timeStart.toISOString().slice(0, 16)}
+          value={toDateTimeLocalValue(timeStart)}
           onChange={handleTimeStartChange}
         />
         <br />
@@ -78,7 +79,7 @@ function ItineraryAddForm({ onAddItem }: ItineraryAddFormProps) {
           type="datetime-local"
           id="timeEnd"
           name="timeEnd"
-          value={timeEnd.toISOString().slice(0, 16)}
+          value={toDateTimeLocalValue(timeEnd)}
           onChange={handleTimeEndChange}
         />
         <br />
