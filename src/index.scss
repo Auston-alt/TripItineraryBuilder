@@ -1,0 +1,34 @@
+* {
+  padding: 1vh 1vw; // Scale padding with viewport size
+}
+
+input {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5vh 0.5vw; // Scale input padding with viewport size
+  width: 100%;
+}
+
+.itinerary-display {
+  width: fit-content;
+  margin: auto;
+
+  ul {
+    li {
+      display: flex;
+      flex-wrap: wrap; // Allow items to wrap on smaller screens
+      justify-content: space-between; // Space out activity and location inputs
+      .activity-input,
+      .location-input {
+        width: calc(
+          50% - 4vw
+        ); // Scale input width with viewport size, accounting for padding
+      }
+      .time-start-input,
+      .time-end-input {
+        width: 100%;
+      }
+    }
+  }
+}
