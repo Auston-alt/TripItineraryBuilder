@@ -1,6 +1,7 @@
 import React from "react";
 import ItineraryDisplay from "./components/ItineraryDisplay";
 import ItineraryAddForm from "./components/ItineraryForm";
+import ItineraryDownloadControls from "./components/ItineraryDownloadControls";
 import { ItineraryItem } from "./components/ItineraryItem";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
 
   return (
     <>
+      <ItineraryDownloadControls itinerary={itinerary} />
       <ItineraryAddForm onAddItem={handleAddItem} />
       <ItineraryDisplay itinerary={itinerary} onUpdateItem={handleUpdateItem} />
     </>

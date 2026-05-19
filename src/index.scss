@@ -10,10 +10,23 @@ input {
   width: 100%;
 }
 
-.itinerary-display {
-  width: fit-content;
-  margin: auto;
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin: 0.5vh 0.5vw;
+  cursor: pointer;
+  &:hover {
+    background-color: #0056b3;
+  }
+}
 
+.itinerary-display {
+  width: 80dvw;
+  margin: auto;
+  min-height: 50dvh; // Ensure the display takes up at least half the viewport height
+  box-shadow: 0 0 100px 1px rgba(0, 0, 0, 0.1);
   ul {
     li {
       display: flex;
@@ -21,9 +34,7 @@ input {
       justify-content: space-between; // Space out activity and location inputs
       .activity-input,
       .location-input {
-        width: calc(
-          50% - 4vw
-        ); // Scale input width with viewport size, accounting for padding
+        flex: 1 1 45%; // Allow inputs to grow and shrink, with a base width of 45%
       }
       .time-start-input,
       .time-end-input {
