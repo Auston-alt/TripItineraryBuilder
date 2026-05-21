@@ -2,11 +2,16 @@ import React from "react";
 import ItineraryDisplay from "./components/ItineraryDisplay";
 import ItineraryAddForm from "./components/ItineraryForm";
 import ItineraryDownloadControls from "./components/ItineraryDownloadControls";
-import { ItineraryItem } from "./components/ItineraryItem";
+import type {
+  ItineraryItem,
+  ItineraryItemUpdateHandler,
+} from "./types/itinerary";
 
 function App() {
+  // App owns the single source of truth for all itinerary data.
   const [itinerary, setItinerary] = React.useState<ItineraryItem[]>([]);
 
+  // Create a new item here so ids stay centralized in the parent.
   const handleAddItem = (item: Omit<ItineraryItem, "id">) => {
     const newItem: ItineraryItem = {
       id: Date.now(),
@@ -16,11 +21,8 @@ function App() {
     setItinerary((prev) => [...prev, newItem]);
   };
 
-  const handleUpdateItem = (
-    id: number,
-    field: "activity" | "location" | "timeStart" | "timeEnd",
-    value: string | Date,
-  ) => {
+  // Generic field updates keep the item editing contract reusable across views.
+  const handleUpdateItem: ItineraryItemUpdateHandler = (id, field, value) => {
     setItinerary((prev) =>
       prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );

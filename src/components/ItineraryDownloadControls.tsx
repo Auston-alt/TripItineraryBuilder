@@ -1,13 +1,13 @@
 import React from "react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { ItineraryItem } from "./ItineraryItem";
+import type { ItineraryItem } from "../types/itinerary";
 
 type ItineraryDownloadControlsProps = {
   itinerary: ItineraryItem[];
 };
 
-// Utility function to escape HTML special characters to prevent injection issues
+// Escape user-provided text before building the downloadable HTML document.
 const escapeHtml = (value: string) =>
   value
     .replaceAll("&", "&amp;")
@@ -16,14 +16,14 @@ const escapeHtml = (value: string) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 
-// Format a Date object into a human-readable string
+// Keep date output consistent across the PDF export.
 const formatDate = (value: Date) =>
   new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(value);
 
-// Generate a date stamp for the filename in YYYY-MM-DD format
+// Stable filename suffix for downloaded files.
 const fileDateStamp = () => new Date().toISOString().slice(0, 10);
 
 function ItineraryDownloadControls({
@@ -32,7 +32,7 @@ function ItineraryDownloadControls({
   const handleDownloadPdf = () => {
     const doc = new jsPDF({ unit: "pt", format: "a4" });
 
-    // Set up the PDF document with a title and generation date
+    // Build a simple, readable PDF export using the current itinerary state.
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
     doc.text("Trip Itinerary", 40, 48);
@@ -47,7 +47,7 @@ function ItineraryDownloadControls({
       item.location,
       formatDate(item.timeStart),
       formatDate(item.timeEnd),
-      "", // Placeholder for "Completed?" column
+      "",
       "",
     ]);
 

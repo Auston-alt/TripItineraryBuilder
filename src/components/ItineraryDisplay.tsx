@@ -1,14 +1,13 @@
 import React from "react";
-import { ItineraryItem } from "./ItineraryItem";
-import { toDateTimeLocalValue } from "../utils/dateTime";
+import { ItineraryItem as ItineraryItemComponent } from "./ItineraryItem";
+import type {
+  ItineraryItem,
+  ItineraryItemUpdateHandler,
+} from "../types/itinerary";
 
 type ItineraryDisplayProps = {
   itinerary: ItineraryItem[];
-  onUpdateItem: (
-    id: number,
-    field: "activity" | "location" | "timeStart" | "timeEnd",
-    value: string | Date,
-  ) => void;
+  onUpdateItem: ItineraryItemUpdateHandler;
 };
 
 function ItineraryDisplay({ itinerary, onUpdateItem }: ItineraryDisplayProps) {
@@ -17,38 +16,8 @@ function ItineraryDisplay({ itinerary, onUpdateItem }: ItineraryDisplayProps) {
       <ul>
         {itinerary.map((item) => (
           <li key={item.id}>
-            <input
-              type="text"
-              value={item.activity}
-              className="activity-input"
-              onChange={(e) =>
-                onUpdateItem(item.id, "activity", e.target.value)
-              }
-            />
-            <input
-              type="text"
-              value={item.location}
-              className="location-input"
-              onChange={(e) =>
-                onUpdateItem(item.id, "location", e.target.value)
-              }
-            />
-            <input
-              type="datetime-local"
-              value={toDateTimeLocalValue(item.timeStart)}
-              className="time-start-input"
-              onChange={(e) =>
-                onUpdateItem(item.id, "timeStart", new Date(e.target.value))
-              }
-            />
-            <input
-              type="datetime-local"
-              value={toDateTimeLocalValue(item.timeEnd)}
-              className="time-end-input"
-              onChange={(e) =>
-                onUpdateItem(item.id, "timeEnd", new Date(e.target.value))
-              }
-            />
+            {/* Render the shared item editor for each saved itinerary entry. */}
+            <ItineraryItemComponent item={item} onUpdateItem={onUpdateItem} />
           </li>
         ))}
       </ul>
