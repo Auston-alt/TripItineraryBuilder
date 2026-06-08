@@ -7,15 +7,6 @@ type ItineraryDownloadControlsProps = {
   itinerary: ItineraryItem[];
 };
 
-// Escape user-provided text before building the downloadable HTML document.
-const escapeHtml = (value: string) =>
-  value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-
 // Keep date output consistent across the PDF export.
 const formatDate = (value: Date) =>
   new Intl.DateTimeFormat("en-US", {
@@ -82,7 +73,9 @@ function ItineraryDownloadControls({
 }: ItineraryDownloadControlsProps) {
   const handleDownloadIcs = () => {
     const icsContent = buildIcs(itinerary);
-    const file = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+    const file = new Blob([icsContent], {
+      type: "text/calendar;charset=utf-8",
+    });
     const url = URL.createObjectURL(file);
     const link = document.createElement("a");
     link.href = url;
