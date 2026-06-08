@@ -1,5 +1,10 @@
+html,
+body {
+  max-width: 100%; // Prevent horizontal scrolling
+  overflow-x: hidden;
+}
 * {
-  padding: 1vh 1vw; // Scale padding with viewport size
+  padding: 5px;
 }
 
 input {
@@ -15,7 +20,6 @@ button {
   color: white;
   border: none;
   border-radius: 4px;
-  margin: 0.5vh 0.5vw;
   cursor: pointer;
   &:hover {
     background-color: #0056b3;
@@ -27,18 +31,48 @@ button {
   margin: auto;
   min-height: 50dvh; // Ensure the display takes up at least half the viewport height
   box-shadow: 0 0 100px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   ul {
     li {
-      display: flex;
-      flex-wrap: wrap; // Allow items to wrap on smaller screens
-      justify-content: space-between; // Space out activity and location inputs
-      .activity-input,
-      .location-input {
-        flex: 1 1 45%; // Allow inputs to grow and shrink, with a base width of 45%
+      border: 1px solid #0000005a;
+      border-radius: 4px;
+    }
+    // Rules for small screens
+    @media (max-width: 600px) {
+      li {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 5vh;
+        .move-up-button,
+        .move-down-button {
+          width: 50vw;
+          margin: 0.5vh auto;
+        }
       }
-      .time-start-input,
-      .time-end-input {
-        width: 100%;
+    }
+    // Rules for larger screens
+    @media (min-width: 601px) {
+      li {
+        display: grid;
+        grid-template-columns: 100px 1fr auto; // Fixed width for label, flexible for input, auto for buttons
+        grid-auto-rows: 50px;
+        gap: 0.5vh 0.5vw; // Scale gap with viewport
+        .move-up-button,
+        .move-down-button {
+          grid-column: 3; // Place buttons in the third column
+        }
+        .move-up-button {
+          grid-row: 2;
+        }
+        .move-down-button {
+          grid-row: 3;
+        }
+        label {
+          grid-column: 1;
+        }
+        input {
+          grid-column: 2;
+        }
       }
     }
   }

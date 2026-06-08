@@ -15,19 +15,25 @@ export function ItineraryItem({
   return (
     <>
       {/* Shared controlled fields for both create and edit flows. */}
+      <label htmlFor={`activity-${item.id}`}>Activity</label>
       <input
+        id={`activity-${item.id}`}
         type="text"
         value={item.activity}
         className="activity-input"
         onChange={(e) => onUpdateItem(item.id, "activity", e.target.value)}
       />
+      <label htmlFor={`location-${item.id}`}>Location</label>
       <input
+        id={`location-${item.id}`}
         type="text"
         value={item.location}
         className="location-input"
         onChange={(e) => onUpdateItem(item.id, "location", e.target.value)}
       />
+      <label htmlFor={`time-start-${item.id}`}>Start Time</label>
       <input
+        id={`time-start-${item.id}`}
         type="datetime-local"
         value={toDateTimeLocalValue(item.timeStart)}
         className="time-start-input"
@@ -35,7 +41,9 @@ export function ItineraryItem({
           onUpdateItem(item.id, "timeStart", new Date(e.target.value))
         }
       />
+      <label htmlFor={`time-end-${item.id}`}>End Time</label>
       <input
+        id={`time-end-${item.id}`}
         type="datetime-local"
         value={toDateTimeLocalValue(item.timeEnd)}
         className="time-end-input"

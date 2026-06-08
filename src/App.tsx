@@ -21,6 +21,25 @@ function App() {
     setItinerary((prev) => [...prev, newItem]);
   };
 
+  // Handler to move itinerary items up or down
+  const handleMoveItem = (id: number, direction: -1 | 1) => {
+    setItinerary((prev) => {
+      const length = prev.length;
+      if (length < 2) return prev;
+
+      const currentIndex = prev.findIndex((item) => item.id === id);
+      if (currentIndex === -1) return prev;
+
+      const targetIndex = (currentIndex + direction + length) % length;
+
+      const next = [...prev]; // Create a shallow copy of the itinerary array
+      const [moved] = next.splice(currentIndex, 1); // Remove the item to move
+      next.splice(targetIndex, 0, moved); // Insert it at the target index
+
+      return next;
+    });
+  };
+
   // Generic field updates keep the item editing contract reusable across views.
   const handleUpdateItem: ItineraryItemUpdateHandler = (id, field, value) => {
     setItinerary((prev) =>
@@ -32,7 +51,11 @@ function App() {
     <>
       <ItineraryDownloadControls itinerary={itinerary} />
       <ItineraryAddForm onAddItem={handleAddItem} />
-      <ItineraryDisplay itinerary={itinerary} onUpdateItem={handleUpdateItem} />
+      <ItineraryDisplay
+        itinerary={itinerary}
+        onUpdateItem={handleUpdateItem}
+        onMoveItem={handleMoveItem}
+      />
     </>
   );
 }
