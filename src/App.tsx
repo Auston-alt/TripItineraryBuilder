@@ -1,54 +1,81 @@
 import React from "react";
+import {
+  CredentialResponse,
+  GoogleLogin,
+  googleLogout,
+} from "@react-oauth/google";
 import ItineraryDisplay from "./components/ItineraryDisplay";
 import ItineraryAddForm from "./components/ItineraryForm";
 import ItineraryDownloadControls from "./components/ItineraryDownloadControls";
-import type {
-  ItineraryItem,
-  ItineraryItemUpdateHandler,
-} from "./types/itinerary";
+import { useItinerary } from "./hooks/useItinerary";
+
+type GoogleJwtPayload = {
+  sub: string;
+  name?: string;
+  email?: string;
+  picture?: string;
+};
+
+const decodeGoogleJwt = (token: string): GoogleJwtPayload | null => {
+  try {
+    const [, payload] = token.split(".");
+    if (!payload) return null;
+
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(
+      normalized.length + ((4 - (normalized.length % 4)) % 4),
+      "=",
+    );
+    const decoded = atob(padded);
+
+    return JSON.parse(decoded) as GoogleJwtPayload;
+  } catch {
+    return null;
+  }
+};
 
 function App() {
-  // App owns the single source of truth for all itinerary data.
-  const [itinerary, setItinerary] = React.useState<ItineraryItem[]>([]);
+  const { itinerary, handleAddItem, handleMoveItem, handleUpdateItem } = useItinerary();
+  const [user, setUser] = React.useState<GoogleJwtPayload | null>(null);
 
-  // Create a new item here so ids stay centralized in the parent.
-  const handleAddItem = (item: Omit<ItineraryItem, "id">) => {
-    const newItem: ItineraryItem = {
-      id: Date.now(),
-      ...item,
-    };
+  const handleGoogleSuccess = (response: CredentialResponse) => {
+    if (!response.credential) return;
 
-    setItinerary((prev) => [...prev, newItem]);
+    const decoded = decodeGoogleJwt(response.credential);
+    if (!decoded) return;
+
+    setUser(decoded);
+
+    // In production, send response.credential to your backend for verification,
+    // session creation, and authorization checks.
   };
 
-  // Handler to move itinerary items up or down
-  const handleMoveItem = (id: number, direction: -1 | 1) => {
-    setItinerary((prev) => {
-      const length = prev.length;
-      if (length < 2) return prev;
-
-      const currentIndex = prev.findIndex((item) => item.id === id);
-      if (currentIndex === -1) return prev;
-
-      const targetIndex = (currentIndex + direction + length) % length;
-
-      const next = [...prev]; // Create a shallow copy of the itinerary array
-      const [moved] = next.splice(currentIndex, 1); // Remove the item to move
-      next.splice(targetIndex, 0, moved); // Insert it at the target index
-
-      return next;
-    });
+  const handleSignOut = () => {
+    googleLogout();
+    setUser(null);
   };
 
-  // Generic field updates keep the item editing contract reusable across views.
-  const handleUpdateItem: ItineraryItemUpdateHandler = (id, field, value) => {
-    setItinerary((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
+  if (!user) {
+    return (
+      <main>
+        <h1>TripItinerary</h1>
+        <p>Sign in with Google to access your itinerary planner.</p>
+        <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => undefined} />
+      </main>
     );
-  };
+  }
 
   return (
     <>
+      <header>
+        <p>
+          Signed in as {user.name ?? "Unknown User"}
+          {user.email ? ` (${user.email})` : ""}
+        </p>
+        <button type="button" onClick={handleSignOut}>
+          Sign out
+        </button>
+      </header>
       <ItineraryDownloadControls itinerary={itinerary} />
       <ItineraryAddForm onAddItem={handleAddItem} />
       <ItineraryDisplay

@@ -8,7 +8,7 @@ import type {
 type ItineraryDisplayProps = {
   itinerary: ItineraryItem[];
   onUpdateItem: ItineraryItemUpdateHandler;
-  onMoveItem: (id: number, direction: -1 | 1) => void;
+  onMoveItem: (id: string, direction: -1 | 1) => void;
 };
 
 function ItineraryDisplay({
